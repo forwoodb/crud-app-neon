@@ -1,71 +1,38 @@
 import { db } from "@/prisma/db";
-import { connection } from "next/server";
+import { revalidatePath } from "next/cache";
 
 export default async function Home() {
-  await connection();
-
   const formAction = async (formData: FormData) => {
     "use server";
+    const itemName = String(formData.get("item-name"));
 
-    const name = String(formData.get("name"));
-    const username = String(formData.get("username"));
-    const email = String(formData.get("email"));
-    console.log({ name, username, email });
+    await db.orm.public.Item.create({
+      itemName,
+    });
+
+    revalidatePath("/");
   };
 
-  // Prisma 8
-  // await db.orm.public.User.create({ name, username, email });
-  // const users = await db.orm.public.User.all();
+  const getItems = async () => {
+    "use cache";
+    return await db.orm.public.Item.all();
+  };
 
-  // console.log(users);
-
-  // Prisma docs - https://www.prisma.io/docs/prisma-orm/add-to-existing-project/postgresql
-  // Also throws error
-  // async function main() {
-  //   const users = await db.orm.public.User.select("id", "email", "name")
-  //     .limit(2)
-  //     .all();
-  //   console.log(users);
-  //   await db.close();
-  // }
-  // main().catch((error) => {
-  //   console.error(error);
-  //   process.exit(1);
-  // });
+  const items = await getItems();
 
   return (
     <main>
-      <h1>Home Page</h1>;
-      <div className="user-form">
-        <h2>Create User</h2>
-      </div>
+      <h1>Home</h1>
       <form action={formAction}>
-        <label htmlFor="name">Name</label>
-        <input type="text" name="name" id="name" />
-        <label htmlFor="username">Username</label>
-        <input type="text" name="username" id="username" />
-        <label htmlFor="email">Email</label>
-        <input type="email" name="email" id="email" required />
-        <button className="btn">Create User</button>
+        <label htmlFor="item-name">Item Name</label>
+        <input type="text" name="item-name" id="item-name" />
+        <button>Add</button>
       </form>
-      <table>
-        <thead>
-          <tr>
-            <th>Name</th>
-            <th>Username</th>
-            <th>Email</th>
-          </tr>
-        </thead>
-        <tbody>
-          {users.map((user) => {
-            return (
-              <tr key={user.id}>
-                <td>{user.name}</td>
-              </tr>
-            );
-          })}
-        </tbody>
-      </table>
+      <ul>
+        {items.map((item) => {
+          return <li key={item.id}>{item.itemName}</li>;
+        })}
+      </ul>
     </main>
   );
 }

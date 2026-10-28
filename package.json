@@ -10,20 +10,21 @@
     "contract:emit": "prisma contract emit"
   },
   "dependencies": {
-    "@neondatabase/serverless": "^1.2.0",
+    "@prisma/orm-postgres": "^8.0.0-rc.21",
     "dotenv": "^18.0.9",
     "next": "16.4.3",
     "react": "19.3.0",
     "react-dom": "19.3.0"
   },
   "devDependencies": {
+    "@prisma/cli-engine": "^0.9.0",
     "@tailwindcss/turbopack": "^4",
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "eslint": "^9",
     "eslint-config-next": "16.4.3",
-    "prisma": "^7.10.1",
+    "prisma": "^8.0.0-rc.28",
     "tailwindcss": "^4",
     "typescript": "^5"
   }
