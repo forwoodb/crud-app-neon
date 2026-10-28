@@ -6,19 +6,16 @@ export default async function Home() {
 
   const formAction = async (formData: FormData) => {
     "use server";
-    // const user = Object.fromEntries(formData);
-    // console.log(user);
-    // db.orm.public.User.create(user);
 
     const name = String(formData.get("name"));
     const username = String(formData.get("username"));
     const email = String(formData.get("email"));
     console.log({ name, username, email });
-
-    await db.orm.public.User.create({ name, username, email });
   };
 
-  const users = await db.orm.public.User.all();
+  // Prisma 8
+  // await db.orm.public.User.create({ name, username, email });
+  // const users = await db.orm.public.User.all();
 
   // console.log(users);
 
